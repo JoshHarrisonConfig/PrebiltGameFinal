@@ -1,0 +1,179 @@
+/* Reset, page background, typography and accessibility defaults. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--tct-900);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* On big landscape displays (laptop, projector, TV) everything scales with the window
+   HEIGHT, so the whole composition keeps its proportions and always fits the screen. */
+@media (min-width: 1100px) and (orientation: landscape) {
+  html {
+    font-size: clamp(16px, 1.85vh, 30px);
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--tct-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  /* A pull-down gesture must never refresh the page in the middle of a game. */
+  overscroll-behavior-y: contain;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Page backdrop: the brand indigo with soft light, plus a very faint barcode motif.
+   Both are fixed pseudo-elements so they never repaint while scrolling. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 36rem at 88% -12%, rgba(121, 134, 203, 0.34), transparent 62%),
+    radial-gradient(48rem 34rem at -8% 108%, rgba(57, 73, 171, 0.5), transparent 60%),
+    linear-gradient(165deg, var(--tct-900) 0%, #19207a 55%, #141a68 100%);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 7rem;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  background: repeating-linear-gradient(
+    90deg,
+    #fff 0 3px,
+    transparent 3px 9px,
+    #fff 9px 10px,
+    transparent 10px 16px,
+    #fff 16px 20px,
+    transparent 20px 26px,
+    #fff 26px 27px,
+    transparent 27px 33px
+  );
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+  mask-image: linear-gradient(to top, #000, transparent);
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+p,
+ol,
+ul,
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+::selection {
+  background: var(--tct-300);
+  color: var(--white);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+/* Keyboard focus is always visible (and never shown for mouse/touch). */
+:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.icon {
+  flex: none;
+}
+
+/* People who ask their device for less motion get none. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,24 +1,67 @@
-// Admin authentication utilities
-const ADMIN_CREDENTIALS = {
-  username: 'admin',
-  password: 'prebilt2024' // In a real app, this would be hashed and stored securely
-};
+// Admin sign-in. The password is checked by the server, which hands back a signed,
+// expiring token. This device keeps only that token; the credentials are no longer
+// part of the app bundle, and "being an admin" is no longer a flag anyone can set.
 
-const ADMIN_SESSION_KEY = 'prebilt_admin_session';
+import { ApiError, apiRequest } from './api.js';
 
-export function authenticateAdmin(username, password) {
-  return username === ADMIN_CREDENTIALS.username && 
-         password === ADMIN_CREDENTIALS.password;
+const SESSION_KEY = 'prebilt_admin_token';
+// The previous client-only flag. It proves nothing now, so it is simply discarded.
+const LEGACY_SESSION_KEY = 'prebilt_admin_session';
+
+function readSession() {
+  try {
+    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (session && typeof session.token === 'string' && session.expiresAt > Date.now()) return session;
+  } catch {
+    // Unreadable or blocked storage: treat as signed out.
+  }
+  return null;
 }
 
-export function setAdminSession() {
-  localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+// Resolves true when signed in, false for wrong credentials. Rejects (ApiError) if the
+// server cannot be reached, so the UI can say that instead of "invalid credentials".
+export async function authenticateAdmin(username, password) {
+  try {
+    const { token, expiresAt } = await apiRequest('/admin/login', {
+      method: 'POST',
+      body: { username, password }
+    });
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ token, expiresAt }));
+    return true;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) return false;
+    throw error;
+  }
 }
 
-export function clearAdminSession() {
-  localStorage.removeItem(ADMIN_SESSION_KEY);
+export function getAdminToken() {
+  return readSession()?.token ?? null;
 }
 
 export function isAdminLoggedIn() {
-  return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+  try {
+    localStorage.removeItem(LEGACY_SESSION_KEY);
+  } catch {
+    // ignore
+  }
+  return readSession() !== null;
+}
+
+export function clearAdminSession() {
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(LEGACY_SESSION_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+// True if the server rejected our token (expired, or the admin password was changed).
+// Signs out locally so the UI falls back to the logged-out view.
+export function handleAuthFailure(error) {
+  if (error instanceof ApiError && error.status === 401) {
+    clearAdminSession();
+    return true;
+  }
+  return false;
 }

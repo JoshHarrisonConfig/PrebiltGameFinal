@@ -1,0 +1,518 @@
+/* Building blocks shared by every screen. */
+
+/* ---- Screen shell ------------------------------------------------------------------ */
+
+.screen {
+  --screen-max: 34rem;
+  width: 100%;
+  max-width: var(--screen-max);
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin-inline: auto;
+  /* Respect notches and gesture bars when the app runs full screen as an installed app. */
+  padding:
+    max(var(--gutter), env(safe-area-inset-top))
+    max(var(--gutter), env(safe-area-inset-right))
+    max(var(--gutter), env(safe-area-inset-bottom))
+    max(var(--gutter), env(safe-area-inset-left));
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: screen-in var(--t-slow) var(--ease-out) both;
+}
+
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: var(--tap);
+}
+
+.topbar-end {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ---- Buttons ----------------------------------------------------------------------- */
+
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--white);
+  --btn-border: rgba(255, 255, 255, 0.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--btn-border);
+  border-radius: var(--radius-md);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color var(--t-fast) ease,
+    border-color var(--t-fast) ease,
+    color var(--t-fast) ease,
+    box-shadow var(--t-base) ease,
+    transform var(--t-base) var(--ease-out);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.btn-primary {
+  --btn-bg: var(--white);
+  --btn-fg: var(--tct-900);
+  --btn-border: var(--white);
+  box-shadow: 0 8px 22px rgba(8, 12, 64, 0.35);
+}
+
+.btn-primary:hover {
+  --btn-bg: var(--tct-50);
+  --btn-border: var(--tct-50);
+  box-shadow: 0 12px 28px rgba(8, 12, 64, 0.45);
+}
+
+.btn-secondary:hover {
+  --btn-bg: var(--surface-raised);
+  --btn-border: var(--white);
+}
+
+.btn-danger {
+  --btn-fg: var(--error-soft);
+  --btn-border: rgba(255, 138, 128, 0.65);
+}
+
+.btn-danger:hover {
+  --btn-bg: rgba(244, 67, 54, 0.16);
+  --btn-border: var(--error-soft);
+}
+
+.btn:disabled,
+.btn[aria-busy='true'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* A spinner replaces the arrow while a request is running. */
+.btn[aria-busy='true']::after {
+  content: '';
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.btn[aria-busy='true'] > .icon {
+  display: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Round icon-only button. Always carries an aria-label. */
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--text);
+  transition:
+    background-color var(--t-fast) ease,
+    border-color var(--t-fast) ease,
+    transform var(--t-base) var(--ease-out);
+}
+
+.icon-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.icon-btn:active {
+  transform: scale(0.94);
+}
+
+.icon-btn[aria-pressed='true'] {
+  background: var(--white);
+  color: var(--tct-900);
+}
+
+/* Pill-shaped button with an icon and a label. */
+.chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--tap);
+  padding: 0 1.1rem 0 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  transition:
+    background-color var(--t-fast) ease,
+    border-color var(--t-fast) ease,
+    transform var(--t-base) var(--ease-out);
+}
+
+.chip-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.chip-btn:active {
+  transform: scale(0.97);
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.button-group .btn {
+  flex: 1 1 14rem;
+}
+
+/* ---- Panels ------------------------------------------------------------------------ */
+
+.panel {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  box-shadow: var(--shadow-1);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .panel--glass {
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+}
+
+.panel-title {
+  font-size: var(--fs-lg);
+}
+
+/* ---- Form fields ------------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.field > label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-2);
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap .field-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.95rem;
+  translate: 0 -50%;
+  color: var(--tct-200);
+  pointer-events: none;
+}
+
+.input-wrap input,
+.settings-form input {
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0.7rem 1rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+  font-size: 1rem; /* 16px: stops iOS zooming into the field */
+  transition:
+    border-color var(--t-fast) ease,
+    background-color var(--t-fast) ease,
+    box-shadow var(--t-fast) ease;
+}
+
+.input-wrap input {
+  padding-left: 2.85rem;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.input-wrap input:hover,
+.settings-form input:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.input-wrap input:focus,
+.settings-form input:focus {
+  outline: none;
+  border-color: var(--white);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+}
+
+.input-wrap input:user-invalid {
+  border-color: var(--error-soft);
+}
+
+/* Browser autofill would paint a pale yellow field; keep it on-brand instead. */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--white);
+  caret-color: var(--white);
+  box-shadow: 0 0 0 100px var(--tct-800) inset;
+  transition: background-color 9999s ease-out;
+}
+
+.error-message {
+  min-height: 1.25rem;
+  font-size: var(--fs-sm);
+  color: var(--error-soft);
+}
+
+.help-text {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.notice {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  text-align: left;
+}
+
+.notice-warning {
+  border: 1px solid var(--warning);
+  background: rgba(255, 179, 0, 0.14);
+  color: var(--warning-soft);
+}
+
+/* ---- Connection status pill -------------------------------------------------------- */
+
+.sync-status {
+  --dot: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  align-self: flex-start;
+  min-height: 2rem;
+  padding: 0.25rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  color: var(--text-2);
+}
+
+.sync-status::before {
+  content: '';
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--dot);
+}
+
+.sync-status.ok {
+  --dot: var(--success);
+}
+
+.sync-status.warn {
+  --dot: var(--warning);
+}
+
+.sync-status.error {
+  --dot: var(--error);
+}
+
+/* The only continuously-moving thing on the page: a slow heartbeat on the live dot. */
+.sync-status.ok::before {
+  animation: live-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---- Avatars ----------------------------------------------------------------------- */
+
+.avatar {
+  --avatar-bg: var(--tct-500);
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: var(--avatar-bg);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.avatar--sm {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+
+/* Brand-friendly hues, all dark enough for white initials (4.5:1 or better). */
+.avatar--0 {
+  --avatar-bg: #3f51b5;
+}
+.avatar--1 {
+  --avatar-bg: #1976d2;
+}
+.avatar--2 {
+  --avatar-bg: #00796b;
+}
+.avatar--3 {
+  --avatar-bg: #8e24aa;
+}
+.avatar--4 {
+  --avatar-bg: #673ab7;
+}
+.avatar--5 {
+  --avatar-bg: #0277bd;
+}
+
+/* ---- Loading placeholders ---------------------------------------------------------- */
+
+.skeleton {
+  display: block;
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 25%,
+    rgba(255, 255, 255, 0.16) 37%,
+    rgba(255, 255, 255, 0.06) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0 50%;
+  }
+}
+
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ---- Notice at the bottom of the screen ("a new version is ready") ----------------- */
+
+.toast {
+  position: fixed;
+  /* left/right 0 + auto margins centres it at its natural width (left: 50% would shrink it) */
+  inset: auto 0 max(1rem, env(safe-area-inset-bottom)) 0;
+  margin-inline: auto;
+  z-index: var(--z-overlay);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  padding: 0.3rem 0.35rem 0.3rem 1.1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: rgba(13, 18, 82, 0.95);
+  box-shadow: var(--shadow-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  animation: toast-in var(--t-slow) var(--ease-out) both;
+}
+
+.toast-text {
+  white-space: nowrap;
+}
+
+.toast-close {
+  border-color: transparent;
+  background: transparent;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "/",
+  "name": "PreBilt Barcode Challenge",
+  "short_name": "PreBilt",
+  "description": "Scan 10 boxes as fast as you can and climb the live PreBilt leaderboard.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#1a237e",
+  "theme_color": "#1a237e",
+  "categories": ["business", "games", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/monochrome-512.png", "sizes": "512x512", "type": "image/png", "purpose": "monochrome" }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/handheld-register.jpg",
+      "sizes": "824x1830",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Register in seconds"
+    },
+    {
+      "src": "/screenshots/handheld-scan.jpg",
+      "sizes": "824x1830",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Scan 10 boxes with the live camera"
+    },
+    {
+      "src": "/screenshots/handheld-leaderboard.jpg",
+      "sizes": "824x1830",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Watch the leaderboard update live"
+    },
+    {
+      "src": "/screenshots/big-screen-leaderboard.jpg",
+      "sizes": "1920x1080",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Show it on a big screen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Leaderboard",
+      "short_name": "Leaderboard",
+      "description": "See the live results",
+      "url": "/#leaderboard",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Play the challenge",
+      "short_name": "Play",
+      "description": "Register and start scanning",
+      "url": "/#login",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
